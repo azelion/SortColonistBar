@@ -31,6 +31,7 @@ namespace SortColonistBar
                 MakeMenuItemForLabel(SortChoice.Value),
                 MakeMenuItemForLabel(SortChoice.Health),
                 MakeMenuItemForLabel(SortChoice.Speed),
+                MakeMenuItemForLabel(SortChoice.Age),
             });
         public static FloatMenuWithOptions ActionMenu;
 
@@ -41,6 +42,8 @@ namespace SortColonistBar
                 Find.WindowStack.TryRemove(LabelMenu, sound);
             }
         }
+
+        public static bool Reverse { get; set; }
 
         public enum SortChoice
         {
@@ -61,6 +64,7 @@ namespace SortColonistBar
             Intellectual,
             Speed,
             Value,
+            Age,
         }
 
         public static FloatMenuOption MakeMenuItemForLabel(SortChoice choice)
@@ -79,6 +83,14 @@ namespace SortColonistBar
                 if (_sort != value)
                 {
                     ThingIDNumberGetter = NextThingIDNumberGetter;
+                }
+                if (value == _sort)
+                {
+                    Tools.Reverse = !Tools.Reverse;
+                }
+                else
+                {
+                    Tools.Reverse = false;
                 }
                 switch (value)
                 {
@@ -144,6 +156,10 @@ namespace SortColonistBar
                     case SortChoice.Art:
                         DisplayOrderGetter = (Pawn x) => x.skills?.GetSkill(SkillDefOf.Artistic) == null || x.skills.GetSkill(SkillDefOf.Artistic).TotallyDisabled ? _noSkill : -x.skills.GetSkill(SkillDefOf.Artistic).Level;
                         NextThingIDNumberGetter = (Pawn x) => x.skills?.GetSkill(SkillDefOf.Artistic) == null || x.skills.GetSkill(SkillDefOf.Artistic).TotallyDisabled ? x.thingIDNumber : 20 - x.skills.GetSkill(SkillDefOf.Artistic).Level;
+                        break;
+                    case SortChoice.Age:
+                        DisplayOrderGetter = (Pawn x) => x.ageTracker?.AgeBiologicalYears ?? _noSkill;
+                        NextThingIDNumberGetter = (Pawn x) => (20 - x.ageTracker?.AgeBiologicalYears) ?? x.thingIDNumber;
                         break;
                     default:
                         Log.Warning("Unimplemented sort opstion");
