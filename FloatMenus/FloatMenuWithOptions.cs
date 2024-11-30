@@ -27,6 +27,4 @@ namespace SortColonistBar.FloatMenus
             Tools.CloseLabelMenu();
         }
     }
-
-
 }
